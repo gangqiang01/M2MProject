@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">leshanclient</string>
+    <string name="mqtt_server">172.21.73.144</string>
+    <string name="mqtt_port">1883</string>
+    <string name="orgid">eclipse</string>
+    <string name="clientid">10</string>
+    <string name="serverid">56783</string>
+    <string name="client_applicationid">mqtt-client</string>
+    <string name="server_applicationid">leshan-server</string>
 </resources>

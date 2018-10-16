@@ -7,14 +7,8 @@ import android.os.IBinder;
 import android.util.Log;
 
 import android.support.annotation.Nullable;
+import com.ibm.lwm2m.client.LwM2MExampleClient;
 
-import com.example.root.leshanclient.demo.LeshanClientDemo;
-
-import org.eclipse.leshan.client.californium.LeshanClient;
-import org.eclipse.leshan.client.californium.LeshanClientBuilder;
-
-import java.util.ArrayList;
-//import com.advantech.lib.Advanlib;
 
 
 /**
@@ -42,14 +36,8 @@ public class ClientService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("testservice","run");
-//        String endpoint = "...";
-//        LeshanClientBuilder builder = new LeshanClientBuilder(endpoint);
-//        LeshanClient client = builder.build();
-//        client.start();
-//        return super.onStartCommand(intent, flags, startId);
-        LeshanClientDemo leshanClientDemo = new LeshanClientDemo();
-        String[] argus = new String[1];
-        leshanClientDemo.start(argus);
+        LwM2MExampleClient respiClient = new LwM2MExampleClient(mContext);
+        respiClient.start(mContext);
         return super.onStartCommand(intent, flags, startId);
     }
 
