@@ -49,35 +49,7 @@ public class LwM2MExampleDeviceObject extends MQTTResource {
     private StringResource timezoneResource;
     private StringResource bindingsResource;
     private Context context;
-    
-//	public LwM2MExampleDeviceObject(String name, boolean bInstance) {
-//		super(name);
-//		this.bInstance = bInstance;
-//
-//		/* Create resources only if its a instance */
-//		if(bInstance == true) {
-//			manufacturerResource = new StringResource("0", false, "MQTT Example Device");
-//		    modelResource = new StringResource("1", false, "Model Test");
-//		    serialNumberResource = new StringResource("2", false, getMACAddress());
-//		    firmwareResource = new StringResource("3", false, "1.0.0");
-//		    rebootResource = new ExecResource("4");
-//		    factoryResetResource = new ExecResource("5");
-//		    powerAvailablePowerResource = new IntegerMultipleResource("6", false, new int[] { 0, 4 });
-//		    powerSourceVoltageResource = new IntegerMultipleResource("7", false, new int[] { 12000,
-//		    		5000 });
-//		    powerSourceCurrentResource = new IntegerMultipleResource("8", false, new int[] { 150, 75 });
-//		    batteryLevelResource = new IntegerResource("9", false, 92);
-//		    memoryFreeResource = new MemoryFreeResource("10", false);
-//		    errorCodeResource = new IntegerMultipleResource("11", false, new int[] { 0 });
-//		    resetErrorCodeResource = new ExecResource("12");
-//		    currentTimeResource = new TimeResource("13", true);
-//		    utcOffsetResource = new StringResource("14", true,
-//		    		new SimpleDateFormat("X").format(Calendar.getInstance().getTime()));
-//		    timezoneResource = new StringResource("15", true, TimeZone.getDefault().getID());
-//		    bindingsResource = new StringResource("16", false, "MQTT");
-//
-//		}
-//	}
+
 
 	public LwM2MExampleDeviceObject(String name, boolean bInstance, Context context) {
 		super(name);
@@ -112,40 +84,6 @@ public class LwM2MExampleDeviceObject extends MQTTResource {
 
 
 	public static String getMACAddress(Context context) {
-//		InetAddress ip;
-//
-//		try {
-//			ip = InetAddress.getLocalHost();
-//			System.out.println("Current IP address : " + ip.getHostAddress());
-//
-//			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
-//
-//			byte[] mac = network.getHardwareAddress();
-//
-//			System.out.print("Current MAC address : ");
-//
-//			StringBuilder sb = new StringBuilder();
-//			for (int i = 0; i < mac.length; i++) {
-//				sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-//			}
-//
-//			return sb.toString();
-//		} catch (UnknownHostException e) {
-//			e.printStackTrace();
-//		} catch (SocketException e){
-//			e.printStackTrace();
-//		}
-//		return null;
-//		get macaddress by wifi
-
-//		WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-//
-//		WifiInfo info = wifi.getConnectionInfo();
-//
-//		String macAdress = info.getMacAddress(); //获取mac地址
-//		Log.i("macAdress:",macAdress);
-//		return macAdress;
-
 		String str="";
 		String macSerial="";
 		try {

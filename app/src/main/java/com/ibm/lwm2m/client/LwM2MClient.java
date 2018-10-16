@@ -4,7 +4,11 @@ import android.content.Context;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.Iterator;
@@ -66,6 +70,8 @@ public class LwM2MClient {
 	private String orgId;
 	private String registerLocationID;
 	private Context context;
+	private String hostname;
+	private int portNumber;
 
 	private LwM2MClient(Context context) {
 		serverEndpointId = "10"; // assumed to come from server as part of
@@ -90,23 +96,47 @@ public class LwM2MClient {
 		orgId = "eclipse";
 	}
 	void start() {
-//		Properties properties = new Properties();
 
-//		InetSocketAddress mqttBrokerAddress = new InetSocketAddress(
-//				"localhost", 1883);
+		InputStream inputStream = null;
+
+		String xmlFileName = "mqtt.config";
+		String path = "/cache/";
+		File xmlFlie = new File(path + xmlFileName);
+		try {
+			inputStream = new FileInputStream(xmlFlie);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		if (inputStream == null) {
 			serverEndpointId = context.getString(R.string.serverid);
 			serverApplicationId = context.getString(R.string.server_applicationid);
-
-			clientEndpointId = LwM2MExampleDeviceObject.getMACAddress(context);
 			clientApplicationId = context.getString(R.string.client_applicationid);
-
 			orgId = context.getString(R.string.orgid);
+			hostname = context.getString(R.string.mqtt_server);
+			portNumber = Integer.parseInt(context.getString(R.string.mqtt_port));
+			Log.i("apkmqttconfig",hostname+"/"+portNumber);
+		}else{
+			try{
+				BuildPropParser parser;
+				parser = new BuildPropParser(xmlFlie,null);
+				hostname = parser.getProp("MQTT_SERVER");
+				portNumber  = Integer.parseInt(parser.getProp("MQTT_PORT"));
+				orgId = parser.getProp("ORGID");
+				serverEndpointId = parser.getProp("SERVER_ID");
+				clientApplicationId = parser.getProp("CLIENT_APPLICATIONID");
+				serverApplicationId = parser.getProp("SERVER_APPLICATIONID");
+				Log.i("localmqttconfig",hostname+"/"+portNumber);
+			}catch(Exception e){
+				e.printStackTrace();
 
-			String hostname = context.getString(R.string.mqtt_server);
-			int portNumber = Integer.parseInt(context.getString(R.string.mqtt_port));
-			String serverURI = "tcp://"+hostname+":"+portNumber;
-			InetSocketAddress mqttBrokerAddress = new InetSocketAddress(hostname, portNumber);
-			Log.i("mqtt","mqttserver:"+hostname+"/port:"+portNumber);
+			}
+
+		}
+		clientEndpointId = LwM2MExampleDeviceObject.getMACAddress(context);
+
+		String serverURI = "tcp://"+hostname+":"+portNumber;
+		InetSocketAddress mqttBrokerAddress = new InetSocketAddress(hostname, portNumber);
+		Log.i("mqtt","mqttserver:"+hostname+"/port:"+portNumber);
 		mqttClient = new MQTTWrapper(mqttBrokerAddress, clientEndpointId);
 
 		// Register to MQTT server
@@ -139,7 +169,7 @@ public class LwM2MClient {
 
 	}
 
-	private void register() {
+	public void register() {
 		/*
 		 * This example simulates the IPSO temperature object which has 3
 		 * resources,
@@ -244,7 +274,7 @@ public class LwM2MClient {
 
 	}
 
-	private void deregister() {
+	public void deregister() {
 
 		// build a new delete request
 		Request mqttRequest = Request.newDelete();
@@ -313,104 +343,7 @@ public class LwM2MClient {
 		return resource;
 	}
 
-	private static void list() {
-		System.out.println("List of available commands");
-		System.out.println(" register :: Register this client to server");
-		System.out
-				.println(" deregister :: deregister this client from the server");
-		System.out.println(" update-register :: updates the registeration");
-		System.out
-				.println(" update :: (update <resource-id> <value>) update a local resource value");
-		System.out
-				.println(" get :: (get <resource-id>) get a local resource value");
-		System.out.println(" >> Available Object and resource ");
-		System.out.println(" >> IPSO temperature Object - <3303/0> ");
-		System.out.println(" >> 3303/0/5700 - SensorValue ");
-		System.out.println(" >> 3303/0/5601 - Minimum Measured Value ");
-		System.out.println(" >> 3303/0/5602 - Maximum Measured Value ");
-		System.out.println(" >> 3303/0/5603 - Min Range Value ");
-		System.out.println(" >> 3303/0/5604 - Max Range Value ");
-	}
 
-	void userAction() {
-		list();
-		Scanner in = new Scanner(System.in);
-		this.register();
-//		while (false) {
-//
-//			System.out.println("Enter the command ");
-//			String input = in.nextLine();
-//
-//			String[] parameters = input.split(" ");
-//
-//			try {
-//				switch (parameters[0]) {
-//
-//				case "register":
-//					if (registerLocationID == null) {
-//						this.register();
-//					} else {
-//						System.out.println("This client is already registered in the server");
-//					}
-//					break;
-//
-//				case "deregister":
-//					if (registerLocationID != null) {
-//						this.deregister();
-//					} else {
-//						System.out.println("This client is either not registered "
-//								+ "or already de-registered from the server");
-//					}
-//					in.close();
-//					System.exit(0);
-//					break;
-//
-//				case "update-register":
-//					this.updateRegisteration();
-//					break;
-//
-//				case "get":
-//					if (parameters.length == 2) {
-//						LocalResource resource = ((LocalResource) getResource(parameters[1]));
-//						if (resource != null) {
-//							System.out.println(resource.getValue());
-//						} else {
-//							System.out.println("Resource - " + parameters[1]
-//									+ " not found!");
-//						}
-//
-//					} else {
-//						System.out
-//								.println("Please specify the command as get <resource-id>");
-//					}
-//					break;
-//
-//				case "update":
-//					if (parameters.length == 3) {
-//						LocalResource resource = (LocalResource) getResource(parameters[1]);
-//						if (resource != null) {
-//							resource.setValue(parameters[2]);
-//						} else {
-//							System.out.println("Resource - " + parameters[1]
-//									+ " not found!");
-//						}
-//					} else {
-//						System.out
-//								.println("Please specify the command as update <resource-id> <value>");
-//					}
-//					break;
-//
-//				default:
-//					list();
-//				}
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//
-//		}
-
-	}
 
 	private String getServerId() {
 		Resource resource = mqttClient.getRoot();

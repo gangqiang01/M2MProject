@@ -44,17 +44,15 @@ public class LwM2MExampleClient {
 		client = LwM2MClient.getClient(context);
 	}
 
-//	public static void main(String args[]) {
-//		LwM2MExampleClient respiClient = new LwM2MExampleClient();
-//		respiClient.start();
-//	}
-
-
 	public void start(Context context) {
 		client.start();
 		// Create the device object
 		LwM2MExampleDeviceObject.createObject(context);
 		LwM2MExampleDeviceObject.createObjectInstance(context);
-		client.userAction();
+		client.register();
+	}
+
+	public void closed(){
+		client.deregister();
 	}
 }

@@ -76,7 +76,7 @@ public class LwM2MRaspiClient {
 		startRaspiReading();
 		RaspiDeviceObject.createObject();
 		RaspiDeviceObject.createObjectInstance();
-		client.userAction();
+		client.register();
 		
 	}
 

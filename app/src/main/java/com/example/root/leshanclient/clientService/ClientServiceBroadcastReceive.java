@@ -16,8 +16,6 @@ public class ClientServiceBroadcastReceive extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i("clientservice", "debug 1");
         context.startService(new Intent(context, ClientService.class));
-
     }
 }

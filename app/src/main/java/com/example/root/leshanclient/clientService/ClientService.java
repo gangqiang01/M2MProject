@@ -18,8 +18,6 @@ import com.ibm.lwm2m.client.LwM2MExampleClient;
 public class ClientService extends Service {
     private static Context mContext;
     public static Intent start(Context context) {
-        //MQTTRmmService mMQTTService = new MQTTRmmService();
-        //Intent mServiceIntent = new Intent(context.getApplicationContext(), mMQTTService.getClass());
         Intent mServiceIntent = new Intent(context.getApplicationContext(), ClientService.class);
 
         // Start the service
@@ -48,10 +46,9 @@ public class ClientService extends Service {
 
     @Override
     public void onDestroy() {
+        LwM2MExampleClient respiClient = new LwM2MExampleClient(mContext);
+        respiClient.closed();
         super.onDestroy();
     }
-
-
-
 
 }
