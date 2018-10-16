@@ -95,7 +95,7 @@ public class LwM2MClient {
 		clientApplicationId = "mqtt-client";
 		orgId = "eclipse";
 	}
-	void start() {
+	public void start() {
 
 		InputStream inputStream = null;
 

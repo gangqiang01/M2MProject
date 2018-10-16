@@ -7,8 +7,10 @@ import android.os.IBinder;
 import android.util.Log;
 
 import android.support.annotation.Nullable;
-import com.ibm.lwm2m.client.LwM2MExampleClient;
 
+import com.ibm.lwm2m.client.LwM2MClient;
+import com.ibm.lwm2m.client.LwM2MExampleClient;
+import com.ibm.lwm2m.objects.LwM2MExampleDeviceObject;
 
 
 /**
@@ -17,6 +19,8 @@ import com.ibm.lwm2m.client.LwM2MExampleClient;
 
 public class ClientService extends Service {
     private static Context mContext;
+    private LwM2MClient client;
+
     public static Intent start(Context context) {
         Intent mServiceIntent = new Intent(context.getApplicationContext(), ClientService.class);
 
@@ -34,8 +38,7 @@ public class ClientService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("testservice","run");
-        LwM2MExampleClient respiClient = new LwM2MExampleClient(mContext);
-        respiClient.start(mContext);
+        registClient();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -46,9 +49,16 @@ public class ClientService extends Service {
 
     @Override
     public void onDestroy() {
-        LwM2MExampleClient respiClient = new LwM2MExampleClient(mContext);
-        respiClient.closed();
+        client.deregister();
         super.onDestroy();
+    }
+    private  void registClient() {
+        client = LwM2MClient.getClient(mContext);
+        client.start();
+        // Create the device object
+        LwM2MExampleDeviceObject.createObject(mContext);
+        LwM2MExampleDeviceObject.createObjectInstance(mContext);
+        client.register();
     }
 
 }
