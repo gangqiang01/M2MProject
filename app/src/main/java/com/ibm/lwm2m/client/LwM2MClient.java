@@ -98,40 +98,35 @@ public class LwM2MClient {
 	public void start() {
 
 		InputStream inputStream = null;
-
-		String xmlFileName = "mqtt.config";
+		String mqttConfigPath;
+		String xmlFileName = "mqtt.properties";
 		String path = "/cache/";
+		Properties props = new Properties();
 		File xmlFlie = new File(path + xmlFileName);
-		try {
-			inputStream = new FileInputStream(xmlFlie);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		if (inputStream == null) {
-			serverEndpointId = context.getString(R.string.serverid);
-			serverApplicationId = context.getString(R.string.server_applicationid);
-			clientApplicationId = context.getString(R.string.client_applicationid);
-			orgId = context.getString(R.string.orgid);
-			hostname = context.getString(R.string.mqtt_server);
-			portNumber = Integer.parseInt(context.getString(R.string.mqtt_port));
-			Log.i("apkmqttconfig",hostname+"/"+portNumber);
-		}else{
-			try{
-				BuildPropParser parser;
-				parser = new BuildPropParser(xmlFlie,null);
-				hostname = parser.getProp("MQTT_SERVER");
-				portNumber  = Integer.parseInt(parser.getProp("MQTT_PORT"));
-				orgId = parser.getProp("ORGID");
-				serverEndpointId = parser.getProp("SERVER_ID");
-				clientApplicationId = parser.getProp("CLIENT_APPLICATIONID");
-				serverApplicationId = parser.getProp("SERVER_APPLICATIONID");
-				Log.i("localmqttconfig",hostname+"/"+portNumber);
-			}catch(Exception e){
-				e.printStackTrace();
 
+		if (xmlFlie.exists()) {
+			try {
+				inputStream = new FileInputStream(xmlFlie);
+				props.load(inputStream);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}else{
+			try {
+				inputStream = context.getAssets().open(xmlFileName);
+				props.load(inputStream);
+			} catch (Exception e1) {
+				e1.printStackTrace();
 			}
 
 		}
+		hostname = props.getProperty("MQTT_SERVER");
+		portNumber  = Integer.parseInt(props.getProperty("MQTT_PORT"));
+		orgId = props.getProperty("ORGID");
+		serverEndpointId = props.getProperty("SERVER_ID");
+		clientApplicationId = props.getProperty("CLIENT_APPLICATIONID");
+		serverApplicationId = props.getProperty("SERVER_APPLICATIONID");
+
 		clientEndpointId = LwM2MExampleDeviceObject.getMACAddress(context);
 
 		String serverURI = "tcp://"+hostname+":"+portNumber;

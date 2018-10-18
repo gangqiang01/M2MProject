@@ -9,7 +9,6 @@ import android.util.Log;
 import android.support.annotation.Nullable;
 
 import com.ibm.lwm2m.client.LwM2MClient;
-import com.ibm.lwm2m.client.LwM2MExampleClient;
 import com.ibm.lwm2m.objects.LwM2MExampleDeviceObject;
 
 
